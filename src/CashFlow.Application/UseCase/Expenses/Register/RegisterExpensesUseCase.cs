@@ -1,6 +1,8 @@
-﻿using CashFlow.Communication.Enums;
+﻿using CashFlow.Application.UseCase.Expenses.Register;
+using CashFlow.Communication.Enums;
 using CashFlow.Communication.Requests;
 using CashFlow.Communication.Responses;
+using CashFlow.Exception.ExceptionBase;
 
 namespace CashFlow.Application.UserCase.Expenses.Register
 {
@@ -14,24 +16,12 @@ namespace CashFlow.Application.UserCase.Expenses.Register
 
         private void Validate(RequestRegisterExpensesJson request)
         {
-            if (string.IsNullOrWhiteSpace(request.Tilte))
+            var validator = new RegisterExpensesValidator();
+            var result = validator.Validate(request);
+            if (result.IsValid == false)
             {
-                throw new ArgumentException("The tilte is required.");
-            }
-
-            if (request.Amount <= 0)
-            {
-                throw new ArgumentException("The Amount must be greater than zero.");
-            }
-
-            if (DateTime.Compare(request.Date, DateTime.UtcNow) > 0)
-            {
-                throw new ArgumentException("Expenses cannot be for the future");
-            }
-
-            if (Enum.IsDefined(typeof(PaymentType), request.PaymentType))
-            {
-                throw new ArgumentException("Payment type is not valid.");
+                var errorMessages = result.Errors.Select(f => f.ErrorMessage).ToList();
+                throw new ErrorOnValidationException(errorMessages);
             }
         }
     }
