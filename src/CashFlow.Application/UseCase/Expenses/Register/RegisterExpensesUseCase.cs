@@ -1,5 +1,4 @@
 ﻿using CashFlow.Application.UseCase.Expenses.Register;
-using CashFlow.Communication.Enums;
 using CashFlow.Communication.Requests;
 using CashFlow.Communication.Responses;
 using CashFlow.Exception.ExceptionBase;
